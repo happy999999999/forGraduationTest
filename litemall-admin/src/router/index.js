@@ -88,58 +88,8 @@ export const asyncRoutes = [
         component: () => import('@/views/student/user'),
         name: 'user',
         meta: {
-          perms: ['GET /admin/user/list'],
+          perms: ['GET /admin/student/list'],
           title: '学生管理',
-          noCache: true
-        }
-      },
-      {
-        path: 'address',
-        component: () => import('@/views/student/address'),
-        name: 'address',
-        meta: {
-          perms: ['GET /admin/address/list'],
-          title: '收货地址',
-          noCache: true
-        }
-      },
-      {
-        path: 'collect',
-        component: () => import('@/views/student/collect'),
-        name: 'collect',
-        meta: {
-          perms: ['GET /admin/collect/list'],
-          title: '会员收藏',
-          noCache: true
-        }
-      },
-      {
-        path: 'footprint',
-        component: () => import('@/views/user/footprint'),
-        name: 'footprint',
-        meta: {
-          perms: ['GET /admin/footprint/list'],
-          title: '会员足迹',
-          noCache: true
-        }
-      },
-      {
-        path: 'history',
-        component: () => import('@/views/user/history'),
-        name: 'history',
-        meta: {
-          perms: ['GET /admin/history/list'],
-          title: '搜索历史',
-          noCache: true
-        }
-      },
-      {
-        path: 'feedback',
-        component: () => import('@/views/user/feedback'),
-        name: 'feedback',
-        meta: {
-          perms: ['GET /admin/feedback/list'],
-          title: '意见反馈',
           noCache: true
         }
       }

@@ -16,7 +16,7 @@
     <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
       <el-table-column align="center" width="100px" label="用户ID" prop="id" sortable/>
 
-      <el-table-column align="center" label="用户昵称" prop="nickname"/>
+      <el-table-column align="center" label="用户昵称" prop="studentName"/>
 
       <el-table-column align="center" label="用户头像" width="80">
         <template slot-scope="scope">
@@ -24,19 +24,19 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="手机号码" prop="mobile"/>
+      <el-table-column align="center" label="手机号码" prop="phoneNumber"/>
 
-      <el-table-column align="center" label="性别" prop="gender">
+      <el-table-column align="center" label="性别" prop="sex">
         <template slot-scope="scope">
-          <el-tag>{{ genderDic[scope.row.gender] }}</el-tag>
+          <el-tag>{{ genderDic[scope.row.sex] }}</el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="生日" prop="birthday"/>
+      <el-table-column align="center" label="生日" prop="graduationTime"/>
 
-      <el-table-column align="center" label="用户等级" prop="userLevel">
+      <el-table-column align="center" label="年级" prop="grade">
         <template slot-scope="scope">
-          <el-tag>{{ levelDic[scope.row.userLevel] }}</el-tag>
+          <el-tag>{{ levelDic[scope.row.grade] }}</el-tag>
         </template>
       </el-table-column>
 
@@ -58,25 +58,25 @@
     <el-dialog :visible.sync="userDialogVisible" title="用户编辑">
       <el-form ref="userDetail" :model="userDetail" status-icon label-position="left" label-width="100px"
                style="width: 400px; margin-left:50px;">
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model="userDetail.username" :disabled="true"/>
+        <el-form-item label="用户名" prop="studentName">
+          <el-input v-model="userDetail.studentName" :disabled="true"/>
         </el-form-item>
-        <el-form-item label="用户昵称" prop="nickname">
-          <el-input v-model="userDetail.nickname"/>
+        <el-form-item label="用户昵称" prop="studentName">
+          <el-input v-model="userDetail.studentName"/>
         </el-form-item>
         <el-form-item label="用户密码" prop="mobile">
           <el-input v-model="userDetail.password"/>
         </el-form-item>
-        <el-form-item label="用户手机" prop="mobile">
-          <el-input v-model="userDetail.mobile"/>
+        <el-form-item label="用户手机" prop="phoneNumber">
+          <el-input v-model="userDetail.phoneNumber"/>
         </el-form-item>
-        <el-form-item label="用户性别" prop="gender">
-          <el-select v-model="userDetail.gender" placeholder="请选择">
+        <el-form-item label="用户性别" prop="sex">
+          <el-select v-model="userDetail.sex" placeholder="请选择">
             <el-option v-for="(item, index) in genderDic" :key="index" :label="item" :value="index"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="用户等级" prop="userLevel">
-          <el-select v-model="userDetail.userLevel" placeholder="请选择">
+        <el-form-item label="用户等级" prop="grade">
+          <el-select v-model="userDetail.grade" placeholder="请选择">
             <el-option v-for="(item, index) in levelDic" :key="index" :label="item" :value="index"/>
           </el-select>
         </el-form-item>
@@ -95,7 +95,7 @@
 </template>
 
 <script>
-import {fetchList, userDetail, updateUser} from '@/api/user'
+import {fetchList, userDetail, updateUser} from '@/api/student'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 export default {
@@ -117,7 +117,7 @@ export default {
       },
       downloadLoading: false,
       genderDic: ['未知', '男', '女'],
-      levelDic: ['普通用户', 'VIP用户', '高级VIP用户'],
+      levelDic: ['', '大一', '大二', '大三', '大四', '大五', '大六', '大七'],
       statusDic: ['可用', '禁用', '注销'],
       userDialogVisible: false,
       userDetail: {}
