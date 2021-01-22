@@ -27,6 +27,8 @@ public class Student {
 
     private Byte grade;//年级 1大一，2大二类推
 
+    private String avatar;//头像
+
     private String qqNumber;//qq号码
 
     private String phoneNumber;//手机号码

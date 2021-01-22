@@ -2,6 +2,8 @@ package org.linlinjava.litemall.db.domain;
 
 import lombok.Data;
 
+import java.sql.Timestamp;
+
 /**
  * Created with IntelliJ IDEA.
  *
@@ -11,15 +13,20 @@ import lombok.Data;
  */
 @Data
 public class Course {
-    private Integer courseId;
 
-    private String courseName;
+    private Integer id;//id
 
-    private Integer teacherId;
+    private Integer courseId;//课程id
 
-    private Integer studentNum;
+    private String courseName;//课程名子
 
-    private Integer courseTime;
+    private Integer teacherId;//上课教师id
 
-    private
+    private Integer studentNum;//学生人数
+
+    private Integer courseTime;//上课课时
+
+
+
+
 }

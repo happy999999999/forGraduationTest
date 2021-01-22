@@ -3,28 +3,33 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.username" clearable class="filter-item" style="width: 200px;" placeholder="请输入用户名"/>
-      <el-input v-model="listQuery.userId" clearable class="filter-item" style="width: 200px;" placeholder="请输入用户Id"/>
-      <el-input v-model="listQuery.mobile" clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号"/>
+      <el-input v-model="listQuery.username" clearable class="filter-item" style="width: 200px;" placeholder="请输入用户名" />
+      <el-input v-model="listQuery.userId" clearable class="filter-item" style="width: 200px;" placeholder="请输入用户Id" />
+      <el-input v-model="listQuery.mobile" clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号" />
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download"
-                 @click="handleDownload">导出
+      <el-button
+        :loading="downloadLoading"
+        class="filter-item"
+        type="primary"
+        icon="el-icon-download"
+        @click="handleDownload"
+      >导出
       </el-button>
     </div>
 
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
-      <el-table-column align="center" width="100px" label="用户ID" prop="id" sortable/>
+      <el-table-column align="center" width="100px" label="用户ID" prop="id" sortable />
 
-      <el-table-column align="center" label="用户昵称" prop="studentName"/>
+      <el-table-column align="center" label="用户昵称" prop="studentName" />
 
       <el-table-column align="center" label="用户头像" width="80">
         <template slot-scope="scope">
-          <el-avatar :src="scope.row.avatar"/>
+          <el-avatar :src="scope.row.avatar" />
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="手机号码" prop="phoneNumber"/>
+      <el-table-column align="center" label="手机号码" prop="phoneNumber" />
 
       <el-table-column align="center" label="性别" prop="sex">
         <template slot-scope="scope">
@@ -32,7 +37,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="生日" prop="graduationTime"/>
+      <el-table-column align="center" label="生日" prop="graduationTime" />
 
       <el-table-column align="center" label="年级" prop="grade">
         <template slot-scope="scope">
@@ -52,37 +57,48 @@
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit"
-                @pagination="getList"/>
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="listQuery.page"
+      :limit.sync="listQuery.limit"
+      @pagination="getList"
+    />
     <!-- 用户编辑对话框 -->
     <el-dialog :visible.sync="userDialogVisible" title="用户编辑">
-      <el-form ref="userDetail" :model="userDetail" status-icon label-position="left" label-width="100px"
-               style="width: 400px; margin-left:50px;">
+      <el-form
+        ref="userDetail"
+        :model="userDetail"
+        status-icon
+        label-position="left"
+        label-width="100px"
+        style="width: 400px; margin-left:50px;"
+      >
         <el-form-item label="用户名" prop="studentName">
-          <el-input v-model="userDetail.studentName" :disabled="true"/>
+          <el-input v-model="userDetail.studentName" :disabled="true" />
         </el-form-item>
         <el-form-item label="用户昵称" prop="studentName">
-          <el-input v-model="userDetail.studentName"/>
+          <el-input v-model="userDetail.studentName" />
         </el-form-item>
-        <el-form-item label="用户密码" prop="mobile">
-          <el-input v-model="userDetail.password"/>
+        <el-form-item label="宿舍位置" prop="dormitory">
+          <el-input v-model="userDetail.dormitory" />
         </el-form-item>
         <el-form-item label="用户手机" prop="phoneNumber">
-          <el-input v-model="userDetail.phoneNumber"/>
+          <el-input v-model="userDetail.phoneNumber" />
         </el-form-item>
         <el-form-item label="用户性别" prop="sex">
           <el-select v-model="userDetail.sex" placeholder="请选择">
-            <el-option v-for="(item, index) in genderDic" :key="index" :label="item" :value="index"/>
+            <el-option v-for="(item, index) in genderDic" :key="index" :label="item" :value="index" />
           </el-select>
         </el-form-item>
         <el-form-item label="用户等级" prop="grade">
           <el-select v-model="userDetail.grade" placeholder="请选择">
-            <el-option v-for="(item, index) in levelDic" :key="index" :label="item" :value="index"/>
+            <el-option v-for="(item, index) in levelDic" :key="index" :label="item" :value="index" />
           </el-select>
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-select v-model="userDetail.status" placeholder="请选择">
-            <el-option v-for="(item, index) in statusDic" :key="index" :label="item" :value="index"/>
+            <el-option v-for="(item, index) in statusDic" :key="index" :label="item" :value="index" />
           </el-select>
         </el-form-item>
       </el-form>
@@ -95,12 +111,12 @@
 </template>
 
 <script>
-import {fetchList, userDetail, updateUser} from '@/api/student'
+import { fetchList, userDetail, updateUser } from '@/api/student'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 export default {
   name: 'User',
-  components: {Pagination},
+  components: { Pagination },
   data() {
     return {
       list: null,
@@ -131,7 +147,7 @@ export default {
       this.listLoading = true
       if (this.listQuery.userId) {
         userDetail(this.listQuery.userId).then(response => {
-          this.list = [];
+          this.list = []
           if (response.data.data) {
             this.list.push(response.data.data)
             this.total = 1

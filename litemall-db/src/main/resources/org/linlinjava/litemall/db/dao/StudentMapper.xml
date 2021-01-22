@@ -9,6 +9,7 @@
         <result column="student_age" jdbcType="INTEGER" property="studentAge"/>
         <result column="sex" jdbcType="INTEGER" property="sex"/>
         <result column="grade" jdbcType="INTEGER" property="grade"/>
+        <result column="avatar" jdbcType="VARCHAR" property="avatar"/>
         <result column="qq_number" jdbcType="VARCHAR" property="qqNumber"/>
         <result column="phone_number" jdbcType="VARCHAR" property="phoneNumber"/>
         <result column="dormitory" jdbcType="VARCHAR" property="dormitory"/>
