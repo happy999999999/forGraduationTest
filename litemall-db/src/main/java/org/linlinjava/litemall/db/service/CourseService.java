@@ -13,7 +13,8 @@ public class CourseService {
     @Autowired
     private CourseMapper courseMapper;
 
-    public List<Course> getCourseList(){
-        return courseMapper.getCourseList();
+    public List<Course> selectList(){
+        return courseMapper.selectList(null);
     }
+
 }

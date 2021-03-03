@@ -2,7 +2,7 @@
   <div class="login-container">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
       <div class="title-container">
-        <h3 class="title">管理员登录</h3>
+        <h3 class="title">用户登录</h3>
       </div>
       <el-form-item prop="username">
         <span class="svg-container">
@@ -47,7 +47,8 @@
     </el-form>
 
     <div class="copyright">
-      Copyright © 2020 xxx.com 版权所有 <a href="http://www.example.com/">沪ICP备xxx号</a>
+      Copyright © 2021 石盛个人版权所有 <a href="https://beian.miit.gov.cn/#/Integrated/recordQuery">京ICP备2021003041号-1
+    </a>
     </div>
   </div>
 </template>
@@ -102,6 +103,7 @@ export default {
   methods: {
     getCode() {
       getKaptcha().then(response => {
+        console.info(response.data.data)
         this.codeImg = response.data.data
       })
     },

@@ -73,6 +73,29 @@ export const constantRoutes = [
 
 export const asyncRoutes = [
   {
+    path: '/course',
+    component: Layout,
+    redirect: 'noredirect',
+    alwaysShow: true,
+    name: 'courseManage',
+    meta: {
+      title: '课程管理',
+      icon: 'chart'
+    },
+    children: [
+      {
+        path: 'course',
+        component: () => import('@/views/course/user'),
+        name: 'user',
+        meta: {
+          perms: ['GET /admin/course/list'],
+          title: '课程管理',
+          noCache: true
+        }
+      }
+    ]
+  },
+  {
     path: '/student',
     component: Layout,
     redirect: 'noredirect',

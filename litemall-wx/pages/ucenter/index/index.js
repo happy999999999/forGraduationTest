@@ -225,7 +225,7 @@ Page({
         wx.removeStorageSync('token');
         wx.removeStorageSync('userInfo');
         wx.reLaunch({
-          url: '/pages/index/index'
+          url: '/pages/login/login'
         });
       }
     })

@@ -26,7 +26,7 @@ public class AdminCourseController {
     @RequiresPermissionsDesc(menu = {"系统管理", "对象存储"}, button = "查询")
     @GetMapping("/list")
     public Object list() {
-        List<Course> courseList = courseService.getCourseList();
+        List<Course> courseList = courseService.selectList();
         return ResponseUtil.okList(courseList);
     }
 

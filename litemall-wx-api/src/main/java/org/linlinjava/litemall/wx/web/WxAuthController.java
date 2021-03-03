@@ -1,5 +1,6 @@
 package org.linlinjava.litemall.wx.web;
 
+import com.google.code.kaptcha.Producer;
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
@@ -26,8 +27,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import sun.misc.BASE64Encoder;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -55,6 +62,39 @@ public class WxAuthController {
 
     @Autowired
     private CouponAssignService couponAssignService;
+
+    @Autowired
+    private Producer kaptchaProducer;
+
+
+
+    @GetMapping("/kaptcha")
+    public Object kaptcha(HttpServletRequest request) {
+        String kaptcha = doKaptcha(request);
+        if (kaptcha != null) {
+            return ResponseUtil.ok(kaptcha);
+        }
+        return ResponseUtil.fail();
+    }
+
+    private String doKaptcha(HttpServletRequest request) {
+        // 生成验证码
+        String text = kaptchaProducer.createText();
+        BufferedImage image = kaptchaProducer.createImage(text);
+        HttpSession session = request.getSession();
+        session.setAttribute("kaptcha", text);
+
+        try {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            ImageIO.write(image, "jpeg", outputStream);
+            BASE64Encoder encoder = new BASE64Encoder();
+            String base64 = encoder.encode(outputStream.toByteArray());
+            String captchaBase64 = "data:image/jpeg;base64," + base64.replaceAll("\r\n", "");
+            return captchaBase64;
+        } catch (IOException e) {
+            return null;
+        }
+    }
 
     /**
      * 账号登录
