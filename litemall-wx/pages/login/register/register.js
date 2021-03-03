@@ -14,7 +14,7 @@ Page({
   onLoad: function(options) {
     // 页面初始化 options为页面跳转所带来的参数
     // 页面渲染完成
-    this.kaptcha()
+    this.kaptcha()//请求图片注册码
 
   },
   onReady: function() {
@@ -71,7 +71,7 @@ Page({
       }
     });
   },
-  //输入验证码
+  //请求图片验证码
   kaptcha: function(){
     var that = this
     wx.request({
@@ -167,7 +167,6 @@ Page({
             showCancel: false
           });
         }
-
         that.requestRegister(res.code);
       }
     });

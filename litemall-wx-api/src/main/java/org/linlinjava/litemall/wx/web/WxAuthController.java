@@ -39,6 +39,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.linlinjava.litemall.wx.util.WxResponseCode.*;
 
@@ -83,12 +84,12 @@ public class WxAuthController {
         BufferedImage image = kaptchaProducer.createImage(text);
         HttpSession session = request.getSession();
         session.setAttribute("kaptcha", text);
-
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             ImageIO.write(image, "jpeg", outputStream);
             BASE64Encoder encoder = new BASE64Encoder();
             String base64 = encoder.encode(outputStream.toByteArray());
+//            base64 = base64.replaceAll("\n","");
             String captchaBase64 = "data:image/jpeg;base64," + base64.replaceAll("\r\n", "");
             return captchaBase64;
         } catch (IOException e) {
@@ -274,6 +275,7 @@ public class WxAuthController {
      */
     @PostMapping("register")
     public Object register(@RequestBody String body, HttpServletRequest request) {
+        logger.info("wxCode:"+JacksonUtil.parseString(body, "wxCode"));
         String username = JacksonUtil.parseString(body, "username");
         String password = JacksonUtil.parseString(body, "password");
         String mobile = JacksonUtil.parseString(body, "mobile");
@@ -299,10 +301,17 @@ public class WxAuthController {
         if (!RegexUtil.isMobileSimple(mobile)) {
             return ResponseUtil.fail(AUTH_INVALID_MOBILE, "手机号格式不正确");
         }
-        //判断验证码是否正确
-        String cacheCode = CaptchaCodeManager.getCachedCaptcha(mobile);
-        if (cacheCode == null || cacheCode.isEmpty() || !cacheCode.equals(code)) {
-            return ResponseUtil.fail(AUTH_CAPTCHA_UNMATCH, "验证码错误");
+
+//        //判断验证码是否正确
+//        String cacheCode = CaptchaCodeManager.getCachedCaptcha(mobile);
+//        if (cacheCode == null || cacheCode.isEmpty() || !cacheCode.equals(code)) {
+//            return ResponseUtil.fail(AUTH_CAPTCHA_UNMATCH, "验证码错误");
+//        }
+        //判断图片验证码
+        HttpSession session = request.getSession();
+        String kaptcha = (String)session.getAttribute("kaptcha");
+        if (Objects.requireNonNull(code).compareToIgnoreCase(kaptcha) != 0) {
+            return ResponseUtil.fail(AUTH_CAPTCHA_UNMATCH, "验证码不正确", doKaptcha(request));
         }
 
         String openId = "";
