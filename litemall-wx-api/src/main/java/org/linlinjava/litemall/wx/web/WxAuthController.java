@@ -23,6 +23,7 @@ import org.linlinjava.litemall.wx.dto.WxLoginInfo;
 import org.linlinjava.litemall.wx.service.CaptchaCodeManager;
 import org.linlinjava.litemall.wx.service.UserTokenManager;
 import org.linlinjava.litemall.core.util.IpUtil;
+import org.linlinjava.litemall.wx.util.KaptchaTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
@@ -69,9 +70,12 @@ public class WxAuthController {
 
 
 
-    @GetMapping("/kaptcha")
-    public Object kaptcha(HttpServletRequest request) {
+    @PostMapping("/kaptcha")
+    public Object kaptcha(@RequestBody String body,HttpServletRequest request) {
+        String wxCode = JacksonUtil.parseString(body, "wxCode");
+        logger.info("wxCode1:"+wxCode);
         String kaptcha = doKaptcha(request);
+        KaptchaTemplate.MAP.put(wxCode,kaptcha);
         if (kaptcha != null) {
             return ResponseUtil.ok(kaptcha);
         }
@@ -90,7 +94,8 @@ public class WxAuthController {
             BASE64Encoder encoder = new BASE64Encoder();
             String base64 = encoder.encode(outputStream.toByteArray());
 //            base64 = base64.replaceAll("\n","");
-            String captchaBase64 = "data:image/jpeg;base64," + base64.replaceAll("\r\n", "");
+//            String captchaBase64 = "data:image/jpeg;base64," + base64.replaceAll("\r\n", "");
+            String captchaBase64 = base64.replaceAll("\r\n", "");
             return captchaBase64;
         } catch (IOException e) {
             return null;
@@ -275,7 +280,6 @@ public class WxAuthController {
      */
     @PostMapping("register")
     public Object register(@RequestBody String body, HttpServletRequest request) {
-        logger.info("wxCode:"+JacksonUtil.parseString(body, "wxCode"));
         String username = JacksonUtil.parseString(body, "username");
         String password = JacksonUtil.parseString(body, "password");
         String mobile = JacksonUtil.parseString(body, "mobile");
@@ -283,6 +287,7 @@ public class WxAuthController {
         // 如果是小程序注册，则必须非空
         // 其他情况，可以为空
         String wxCode = JacksonUtil.parseString(body, "wxCode");
+        logger.info("wxCode2:"+wxCode);
 
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password) || StringUtils.isEmpty(mobile)
                 || StringUtils.isEmpty(code)) {
@@ -309,10 +314,16 @@ public class WxAuthController {
 //        }
         //判断图片验证码
         HttpSession session = request.getSession();
-        String kaptcha = (String)session.getAttribute("kaptcha");
+//        String kaptcha = (String)session.getAttribute("kaptcha");
+        String kaptcha = (String)KaptchaTemplate.MAP.get(wxCode);
+        logger.info("code="+code);
+        logger.info("kaptcha="+kaptcha);
+        logger.info("true or false:"+kaptcha.equals(code));
         if (Objects.requireNonNull(code).compareToIgnoreCase(kaptcha) != 0) {
             return ResponseUtil.fail(AUTH_CAPTCHA_UNMATCH, "验证码不正确", doKaptcha(request));
         }
+        KaptchaTemplate.MAP.remove(wxCode);
+        logger.info("map.size()="+KaptchaTemplate.MAP.size());
 
         String openId = "";
         // 非空，则是小程序注册

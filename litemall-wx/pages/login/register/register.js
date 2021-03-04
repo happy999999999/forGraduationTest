@@ -4,17 +4,19 @@ var check = require('../../../utils/check.js');
 var app = getApp();
 Page({
   data: {
-    username: '',
-    password: '',
-    confirmPassword: '',
-    mobile: '',
+    username: 'ssbban',
+    password: 'a823389870',
+    confirmPassword: 'a823389870',
+    mobile: '17186780926',
     code: '',
-    codeImg:' '
+    codeImg:' ',
+    wxCode:' '
   },
   onLoad: function(options) {
     // 页面初始化 options为页面跳转所带来的参数
     // 页面渲染完成
-    this.kaptcha()//请求图片注册码
+    this.getWxcode();
+    // this.kaptcha()//请求图片注册码
 
   },
   onReady: function() {
@@ -73,19 +75,47 @@ Page({
   },
   //请求图片验证码
   kaptcha: function(){
-    var that = this
+    var that = this;
+    console.info("wxCode:"+that.data.wxCode)
     wx.request({
       url: api.LoginRegisterKaptch,
-      method:'GET',
+      data: {
+        username: that.data.username,
+        password: that.data.password,
+        mobile: that.data.mobile,
+        code: that.data.code,
+        wxCode: that.data.wxCode
+      },
+      method:'POST',
       header: {
         'content-type': 'application/json'
       },
       success: function(res) {
         console.info(res.data.data)
-        var str = (String)(res.data.data).substring(23)      
+        // var str = (String)(res.data.data).substring(23)
+        var str = (String)(res.data.data)
         that.setData({
           codeImg: str
         })
+      }
+    })
+  },
+  //获取wxCode
+  getWxcode: function(){
+    var that = this;
+    wx.login({
+      success: function(res) {
+        if (!res.code) {
+          wx.showModal({
+            title: '错误信息',
+            content: '注册失败',
+            showCancel: false
+          });
+        }
+        that.setData({
+          wxCode:res.code
+        })
+        that.kaptcha();
       }
     })
   },
@@ -98,7 +128,7 @@ Page({
         username: that.data.username,
         password: that.data.password,
         mobile: that.data.mobile,
-        code: that.data.code,
+        code: that.data.codeImg,
         wxCode: wxCode
       },
       method: 'POST',
@@ -157,19 +187,7 @@ Page({
       });
       return false;
     }
-
-    wx.login({
-      success: function(res) {
-        if (!res.code) {
-          wx.showModal({
-            title: '错误信息',
-            content: '注册失败',
-            showCancel: false
-          });
-        }
-        that.requestRegister(res.code);
-      }
-    });
+    that.requestRegister(that.data.wxCode);
   },
   bindUsernameInput: function(e) {
 
